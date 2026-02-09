@@ -18,24 +18,37 @@
 
 ## 🌲 Pine Script Collection (TradingView)
 
-**12 public indicators** | **679+ boosts** | Pine Script v6
+**12 published indicators** | **679+ boosts** | Pine Script v6
+
+### Open Source (11 indicators — code available in [`code/pinescript/`](code/pinescript/))
 
 | # | Script | Boosts |
 |:--|:--|:--|
-| 1 | QQE v3.0 [v6] - AI-Powered Trend Signal | 175 |
-| 2 | EDUVEST Lorentzian Classification | 85 |
-| 3 | EduVest - IFA-VP Context v3.0 [NEON Edition] | 67 |
-| 4 | IFA YouTube-v6 SMA Analysis Edition | 65 |
-| 5 | EDUVEST UTBOT ADJ - Adaptive ATR Trailing Stop | 58 |
-| 6 | EDUVEST QQE Signal v3.0 - MTF Scoring | 55 |
-| 7 | NDOSD Visual Pro - Complementary Gradient [v6] | 54 |
-| 8 | RSHL Traffic Light - MTF Trend Analyzer v2.0 | 42 |
-| 9 | Volume Profile + POC v2.0 [v6] | 40 |
-| 10 | EDUVEST QQE Grade System - S/A/B/C | 34 |
-| 11 | 5-Line System v3.0 [Rainbow] - Pro S/R Suite | 2 |
-| 12 | QQE x HMA Showtime v3.5 | 2 |
+| 1 | EDUVEST Lorentzian Classification | 85 |
+| 2 | EduVest - IFA-VP Context v3.0 [NEON Edition] | 67 |
+| 3 | IFA YouTube-v6 SMA Analysis Edition | 65 |
+| 4 | EDUVEST UTBOT ADJ - Adaptive ATR Trailing Stop | 58 |
+| 5 | EDUVEST QQE Signal v3.0 - MTF Scoring | 55 |
+| 6 | NDOSD Visual Pro - Complementary Gradient [v6] | 54 |
+| 7 | RSHL Traffic Light - MTF Trend Analyzer v2.0 | 42 |
+| 8 | Volume Profile + POC v2.0 [v6] | 40 |
+| 9 | EDUVEST QQE Grade System - S/A/B/C | 34 |
+| 10 | 5-Line System v3.0 [Rainbow] - Pro S/R Suite | 2 |
+| 11 | QQE x HMA Showtime v3.5 | 2 |
 
-👉 [View all scripts on TradingView](https://www.tradingview.com/u/EduVest_doro/#published-scripts) | [Details](code/pinescript/)
+### Premium (invite-only)
+
+| Script | Boosts | Description |
+|:--|:--|:--|
+| **QQE v3.0 [v6] - AI-Powered Trend Signal** | 175 | AI-enhanced Quantitative Qualitative Estimation with proprietary signal logic. Combines smoothed RSI, dynamic volatility bands, and multi-timeframe scoring. The most boosted indicator in the collection — built on a proven 64% win rate strategy with documented +610,000 JPY profit. |
+
+| QQE v3.0 on S&P 500 (8H) |
+|:--:|
+| ![QQE v3.0](images/trading/I-05_PineScript.png) |
+
+> 💡 For access, contact via [Upwork](https://www.upwork.com/freelancers/seiichiT) or [Fiverr](https://fiverr.com/eduvest)
+
+👉 [View all scripts on TradingView](https://www.tradingview.com/u/EduVest_doro/#published-scripts)
 
 ---
 
@@ -88,8 +101,8 @@ trading-portfolio/
 ├── code/
 │   ├── ninjatrader/
 │   │   └── QQEv6.cs      # QQE v6 Strategy (NinjaScript)
-│   └── pinescript/        # TradingView Pine Script collection
-│       └── README.md      # 12 published indicators (679+ boosts)
+│   └── pinescript/        # TradingView Pine Script collection (open source)
+│       └── README.md      # 11 open source indicators (504+ boosts)
 ├── proposals/            # 5AI Integrated Proposal Samples
 │   ├── P-42  Gemini AI Wrapper
 │   ├── P-44  AI Product Builder Mentor
@@ -97,12 +110,12 @@ trading-portfolio/
 │   ├── P-46  SMT Divergence (TradingView)
 │   ├── P-47  Knowledge Graph (Higher Education)
 │   └── P-48  Excel + AI → WordPress Automation
-├── BB_スクイーズ_モメンタム.mq5
-├── ICT_キルゾーン_セッション.mq5
+├── BB_Squeeze_Momentum.mq5
+├── ICT_Killzone_Sessions.mq5
 ├── ICT_OrderBlock_Detector.mq5
-├── MTF_トレンド_ダッシュボード.mq5
-├── QQE_ショータイム_v1.mq5
-└── セッション_VWAP.mq5
+├── MTF_Trend_Dashboard.mq5
+├── QQE_Showtime_v1.mq5
+└── Session_VWAP.mq5
 ```
 
 ---
@@ -136,7 +149,7 @@ trading-portfolio/
 30 years of STEM education experience, developing interactive learning applications:
 
 | Math (Sine Rule) | Data Science (530 Q) | Physics FBD | College Algebra |
-|:--:|:--:|:--:|
+|:--:|:--:|:--:|:--:|
 | ![I-22](images/education/I-22_Math_SineRule.png) | ![I-24](images/education/I-24_Nanzan_530.png) | ![I-29](images/education/I-29_Physics_FBD.png) | ![I-30](images/education/I-30_CollegeAlgebra.png) |
 
 ---
