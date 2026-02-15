@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Seiichi Tanaka - Trading Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#16213e 100%);color:#e0e0e0;line-height:1.6;overflow-x:hidden}
+        .lang-bar{position:sticky;top:0;z-index:1000;background:linear-gradient(90deg,#1a1a2e 0%,#16213e 100%);padding:12px 16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;border-bottom:1px solid rgba(52,211,153,0.2);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+        .lang-btn{background:transparent;border:2px solid rgba(52,211,153,0.3);color:#a0a0a0;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.3s ease;white-space:nowrap}
+        .lang-btn:hover{border-color:rgba(52,211,153,0.8);color:#34d399;transform:translateY(-2px)}
+        .lang-btn.active{background:rgba(52,211,153,0.2);border-color:#34d399;color:#34d399;box-shadow:0 0 12px rgba(52,211,153,0.3)}
+        .container{max-width:1200px;margin:0 auto;padding:20px}
+        .hero{text-align:center;padding:60px 20px;background:linear-gradient(135deg,rgba(52,211,153,0.05) 0%,rgba(59,130,246,0.05) 100%);border-radius:12px;margin:30px 0;border:1px solid rgba(52,211,153,0.1);animation:fadeInDown 0.8s ease}
+        .hero h1{font-size:48px;margin-bottom:16px;background:linear-gradient(135deg,#34d399,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+        .hero p{font-size:20px;color:#a0a0a0;margin-bottom:24px}
+        .hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+        .cta-btn{padding:12px 32px;background:linear-gradient(135deg,#34d399,#2dd4bf);color:#0a0a1a;border:none;border-radius:8px;font-weight:600;font-size:16px;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(52,211,153,0.3);text-decoration:none;display:inline-block}
+        .cta-btn:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(52,211,153,0.5)}
+        .cta-btn.secondary{background:transparent;color:#34d399;border:2px solid #34d399}
+        .cta-btn.secondary:hover{background:rgba(52,211,153,0.1)}
+        .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;margin:40px 0}
+        .metric-card{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:1px solid rgba(52,211,153,0.2);padding:24px;border-radius:12px;transition:all 0.3s ease;animation:fadeInUp 0.6s ease}
+        .metric-card:hover{transform:translateY(-8px);border-color:rgba(52,211,153,0.6);box-shadow:0 8px 24px rgba(52,211,153,0.15)}
+        .metric-icon{font-size:32px;margin-bottom:12px}
+        .metric-label{font-size:14px;color:#a0a0a0;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600}
+        .metric-value{font-size:36px;font-weight:700;background:linear-gradient(135deg,#34d399,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .section-header{font-size:32px;font-weight:700;margin:48px 0 24px 0;padding-bottom:12px;border-bottom:2px solid rgba(52,211,153,0.3);color:#34d399}
+        .charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:24px;margin:40px 0}
+        .chart-container{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:1px solid rgba(52,211,153,0.2);padding:24px;border-radius:12px;transition:all 0.3s ease}
+        .chart-container:hover{border-color:rgba(52,211,153,0.6);box-shadow:0 8px 24px rgba(52,211,153,0.15)}
+        .chart-title{font-size:18px;font-weight:600;margin-bottom:20px;color:#34d399}
+        .chart-canvas{position:relative;height:300px}
+        .platforms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin:40px 0}
+        .platform-card{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:1px solid rgba(52,211,153,0.2);padding:20px;border-radius:12px;text-align:center;transition:all 0.3s ease}
+        .platform-card:hover{transform:translateY(-8px);border-color:rgba(52,211,153,0.6);box-shadow:0 8px 24px rgba(52,211,153,0.15)}
+        .platform-icon{font-size:40px;margin-bottom:12px}
+        .platform-name{font-weight:600;font-size:14px;color:#e0e0e0}
+        .social-proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin:40px 0}
+        .social-card{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:1px solid rgba(52,211,153,0.2);padding:24px;border-radius:12px;text-align:center;transition:all 0.3s ease}
+        .social-card:hover{transform:translateY(-8px);border-color:rgba(52,211,153,0.6);box-shadow:0 8px 24px rgba(52,211,153,0.15)}
+        .social-icon{font-size:48px;margin-bottom:16px}
+        .social-label{font-size:12px;color:#a0a0a0;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+        .social-value{font-size:32px;font-weight:700;color:#34d399}
+        .strategy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin:40px 0}
+        .strategy-card{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);border:1px solid rgba(52,211,153,0.2);padding:24px;border-radius:12px;transition:all 0.3s ease}
+        .strategy-card:hover{transform:translateY(-8px);border-color:rgba(52,211,153,0.6);box-shadow:0 8px 24px rgba(52,211,153,0.15)}
+        .strategy-name{font-size:18px;font-weight:600;margin-bottom:12px;color:#34d399}
+        .strategy-stat{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px;border-bottom:1px solid rgba(52,211,153,0.1)}
+        .strategy-stat:last-child{border-bottom:none}
+        .strategy-stat-value{color:#34d399;font-weight:600}
+        .cta-section{background:linear-gradient(135deg,rgba(52,211,153,0.1) 0%,rgba(59,130,246,0.1) 100%);border:1px solid rgba(52,211,153,0.2);padding:48px 24px;border-radius:12px;text-align:center;margin:60px 0}
+        .cta-section h2{font-size:32px;margin-bottom:16px;color:#34d399}
+        .cta-section p{font-size:18px;color:#a0a0a0;margin-bottom:32px}
+        footer{text-align:center;padding:40px 20px;border-top:1px solid rgba(52,211,153,0.2);color:#a0a0a0;font-size:14px}
+        .footer-content{max-width:1200px;margin:0 auto}
+        .footer-links{display:flex;gap:24px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+        .footer-link{color:#34d399;text-decoration:none;transition:all 0.3s ease}
+        .footer-link:hover{color:#2dd4bf;text-decoration:underline}
+        @keyframes fadeInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @media(max-width:768px){.hero h1{font-size:32px}.charts-grid{grid-template-columns:1fr}.metrics-grid{grid-template-columns:repeat(2,1fr)}.lang-btn{padding:6px 10px;font-size:12px}}
+        @media(max-width:480px){.container{padding:12px}.hero{padding:40px 16px}.hero h1{font-size:24px}.metric-value{font-size:28px}.metrics-grid{grid-template-columns:1fr}}
+        ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#0a0a1a}::-webkit-scrollbar-thumb{background:rgba(52,211,153,0.5);border-radius:5px}
+        html[dir="rtl"] .strategy-stat{flex-direction:row-reverse}
+        html[dir="rtl"] .footer-links{flex-direction:row-reverse}
+    </style>
+</head>
+<body>
+    <div class="lang-bar">
+        <button class="lang-btn active" onclick="switchLang('ja')">ð¯ðµ æ¥æ¬èª</button>
+        <button class="lang-btn" onclick="switchLang('en')">ðºð¸ English</button>
+        <button class="lang-btn" onclick="switchLang('ar')">ð¸ð¦ Ø§ÙØ¹Ø±Ø¨ÙØ©</button>
+        <button class="lang-btn" onclick="switchLang('es')">ðªð¸ EspaÃ±ol</button>
+        <button class="lang-btn" onclick="switchLang('pt')">ð§ð· PortuguÃªs</button>
+        <button class="lang-btn" onclick="switchLang('fr')">ð«ð· FranÃ§ais</button>
+        <button class="lang-btn" onclick="switchLang('de')">ð©ðª Deutsch</button>
+    </div>
+    <div class="container">
+        <div class="hero">
+            <h1>Seiichi Tanaka</h1>
+            <p data-i18n="heroTagline">Professional Trader | Strategy Developer | Trading Educator</p>
+            <div class="hero-cta">
+                <button class="cta-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" data-i18n="ctaContact">Get in Touch</button>
+                <a href="https://github.com/tanaka1922/trading-portfolio" target="_blank" class="cta-btn secondary" data-i18n="ctaGithub">View on GitHub</a>
+            </div>
+        </div>
+        <h2 class="section-header" data-i18n="metricsTitle">Key Performance Metrics</h2>
+        <div class="metrics-grid">
+            <div class="metric-card"><div class="metric-icon">ð</div><div class="metric-label" data-i18n="totalTrades">Total Trades</div><div class="metric-value">1,850+</div></div>
+            <div class="metric-card"><div class="metric-icon">ð¯</div><div class="metric-label" data-i18n="overallWinRate">Overall Win Rate</div><div class="metric-value">58%</div></div>
+            <div class="metric-card"><div class="metric-icon">ð¥ï¸</div><div class="metric-label" data-i18n="platformsSupported">Platforms Supported</div><div class="metric-value">7</div></div>
+            <div class="metric-card"><div class="metric-icon">ð</div><div class="metric-label" data-i18n="pineScriptsPublished">Pine Scripts Published</div><div class="metric-value">12</div></div>
+        </div>
+        <h2 class="section-header" data-i18n="strategyPerformanceTitle">Strategy Performance</h2>
+        <div class="strategy-grid">
+            <div class="strategy-card">
+                <div class="strategy-name" data-i18n="qqeShowtimeName">QQE Showtime</div>
+                <div class="strategy-stat"><span data-i18n="winRate">Win Rate</span><span class="strategy-stat-value">64%</span></div>
+                <div class="strategy-stat"><span data-i18n="profit">Profit</span><span class="strategy-stat-value">+610K JPY</span></div>
+                <div class="strategy-stat"><span data-i18n="trades">Trades</span><span class="strategy-stat-value">380+</span></div>
+            </div>
+            <div class="strategy-card">
+                <div class="strategy-name" data-i18n="mt5TrendName">MT5 Trend Following</div>
+                <div class="strategy-stat"><span data-i18n="winRate">Win Rate</span><span class="strategy-stat-value">65%</span></div>
+                <div class="strategy-stat"><span data-i18n="profit">Profit</span><span class="strategy-stat-value">+480K JPY</span></div>
+                <div class="strategy-stat"><span data-i18n="trades">Trades</span><span class="strategy-stat-value">320+</span></div>
+            </div>
+        </div>
+        <h2 class="section-header" data-i18n="performanceChartsTitle">Performance Charts</h2>
+        <div class="charts-grid">
+            <div class="chart-container"><div class="chart-title" data-i18n="strategyComparison">Strategy Comparison</div><div class="chart-canvas"><canvas id="strategyChart"></canvas></div></div>
+            <div class="chart-container"><div class="chart-title" data-i18n="monthlyPnL">Monthly P&amp;L</div><div class="chart-canvas"><canvas id="pnlChart"></canvas></div></div>
+        </div>
+        <h2 class="section-header" data-i18n="platformExpertiseTitle">Platform Expertise</h2>
+        <div class="platforms-grid">
+            <div class="platform-card"><div class="platform-icon">âï¸</div><div class="platform-name">MT4</div></div>
+            <div class="platform-card"><div class="platform-icon">âï¸</div><div class="platform-name">MT5</div></div>
+            <div class="platform-card"><div class="platform-icon">ð</div><div class="platform-name">TradingView</div></div>
+            <div class="platform-card"><div class="platform-icon">ð§</div><div class="platform-name">NinjaTrader 8</div></div>
+            <div class="platform-card"><div class="platform-icon">ð¼</div><div class="platform-name">TradeStation</div></div>
+            <div class="platform-card"><div class="platform-icon">ð±</div><div class="platform-name">cTrader</div></div>
+            <div class="platform-card"><div class="platform-icon">ð</div><div class="platform-name">Bybit API</div></div>
+        </div>
+        <h2 class="section-header" data-i18n="socialProofTitle">Community Presence</h2>
+        <div class="social-proof">
+            <div class="social-card"><div class="social-icon">ðº</div><div class="social-label" data-i18n="youtubeSubscribers">YouTube Subscribers</div><div class="social-value">2,000+</div></div>
+            <div class="social-card"><div class="social-icon">ðµ</div><div class="social-label" data-i18n="tiktokFollowers">TikTok Followers</div><div class="social-value">39,000+</div></div>
+            <div class="social-card"><div class="social-icon">ð</div><div class="social-label" data-i18n="pineScriptBoosts">Pine Script Boosts</div><div class="social-value">679+</div></div>
+        </div>
+        <div class="cta-section" id="contact">
+            <h2 data-i18n="ctaSectionTitle">Ready to Learn More?</h2>
+            <p data-i18n="ctaSectionDescription">Connect with me on GitHub to explore my trading strategies and portfolio.</p>
+            <a href="https://github.com/tanaka1922/trading-portfolio" target="_blank" class="cta-btn" data-i18n="ctaGitHubLink">Visit GitHub Profile</a>
+        </div>
+    </div>
+    <footer><div class="footer-content"><div class="footer-links"><a href="https://github.com/tanaka1922/trading-portfolio" target="_blank" class="footer-link" data-i18n="footerGithub">GitHub</a><a href="#" class="footer-link" data-i18n="footerPrivacy">Privacy Policy</a><a href="#" class="footer-link" data-i18n="footerTerms">Terms of Service</a></div><p data-i18n="footerCopyright">Â© 2024 Seiichi Tanaka. All rights reserved.</p></div></footer>
+    <script>
+const translations={ja:{pageTitle:'Seiichi Tanaka - ãã¬ã¼ãã£ã³ã°ããã·ã¥ãã¼ã',heroTagline:'ãã­ãã§ãã·ã§ãã«ãã¬ã¼ãã¼ | ã¹ãã©ãã¸ã¼éçºè | ãã¬ã¼ãã£ã³ã°æè²è',ctaContact:'ãåãåãã',ctaGithub:'GitHubã§è¡¨ç¤º',metricsTitle:'ä¸»è¦ããã©ã¼ãã³ã¹ã¡ããªã¯ã¹',totalTrades:'ç·ãã¬ã¼ãæ°',overallWinRate:'å¨ä½åç',platformsSupported:'ãµãã¼ããã©ãããã©ã¼ã ',pineScriptsPublished:'å¬éãã¤ã³ã¹ã¯ãªãã',strategyPerformanceTitle:'ã¹ãã©ãã¸ã¼ããã©ã¼ãã³ã¹',qqeShowtimeName:'QQE Showtime',mt5TrendName:'MT5ãã¬ã³ããã©ã­ã¼ã¤ã³ã°',winRate:'åç',profit:'å©ç',trades:'ãã¬ã¼ã',performanceChartsTitle:'ããã©ã¼ãã³ã¹ãã£ã¼ã',strategyComparison:'ã¹ãã©ãã¸ã¼æ¯è¼',monthlyPnL:'æéæç',platformExpertiseTitle:'ãã©ãããã©ã¼ã å°éç¥è­',socialProofTitle:'ã³ãã¥ããã£ãã¬ã¼ã³ã¹',youtubeSubscribers:'YouTubeãã£ã³ãã«ç»é²è',tiktokFollowers:'TikTokãã©ã­ã¯ã¼',pineScriptBoosts:'ãã¤ã³ã¹ã¯ãªãããã¼ã¹ã',ctaSectionTitle:'ãã£ã¨ç¥ãããã§ããï¼',ctaSectionDescription:'GitHubã§ç§ã®ãã¬ã¼ãã£ã³ã°ã¹ãã©ãã¸ã¼ã¨ãã¼ããã©ãªãªãç¢ºèªãã¦ãã ããã',ctaGitHubLink:'GitHubãã­ãã£ã¼ã«ã«ã¢ã¯ã»ã¹',footerGithub:'GitHub',footerPrivacy:'ãã©ã¤ãã·ã¼ããªã·ã¼',footerTerms:'å©ç¨è¦ç´',footerCopyright:'Â© 2024 Seiichi Tanaka. All rights reserved.'},en:{pageTitle:'Seiichi Tanaka - Trading Dashboard',heroTagline:'Professional Trader | Strategy Developer | Trading Educator',ctaContact:'Get in Touch',ctaGithub:'View on GitHub',metricsTitle:'Key Performance Metrics',totalTrades:'Total Trades',overallWinRate:'Overall Win Rate',platformsSupported:'Platforms Supported',pineScriptsPublished:'Pine Scripts Published',strategyPerformanceTitle:'Strategy Performance',qqeShowtimeName:'QQE Showtime',mt5TrendName:'MT5 Trend Following',winRate:'Win Rate',profit:'Profit',trades:'Trades',performanceChartsTitle:'Performance Charts',strategyComparison:'Strategy Comparison',monthlyPnL:'Monthly P&L',platformExpertiseTitle:'Platform Expertise',socialProofTitle:'Community Presence',youtubeSubscribers:'YouTube Subscribers',tiktokFollowers:'TikTok Followers',pineScriptBoosts:'Pine Script Boosts',ctaSectionTitle:'Ready to Learn More?',ctaSectionDescription:'Connect with me on GitHub to explore my trading strategies and portfolio.',ctaGitHubLink:'Visit GitHub Profile',footerGithub:'GitHub',footerPrivacy:'Privacy Policy',footerTerms:'Terms of Service',footerCopyright:'Â© 2024 Seiichi Tanaka. All rights reserved.'},ar:{pageTitle:'Seiichi Tanaka - ÙÙØ­Ø© ØªØ­ÙÙ Ø§ÙØªØ¯Ø§ÙÙ',heroTagline:'ØªØ§Ø¬Ø± ÙØ­ØªØ±Ù | ÙØ·ÙØ± Ø§ÙØ§Ø³ØªØ±Ø§ØªÙØ¬ÙØ© | ÙØ¹ÙÙ Ø§ÙØªØ¯Ø§ÙÙ',ctaContact:'ØªÙØ§ØµÙ ÙØ¹ÙØ§',ctaGithub:'Ø¹Ø±Ø¶ Ø¹ÙÙ GitHub',metricsTitle:'ÙÙØ§ÙÙØ³ Ø§ÙØ£Ø¯Ø§Ø¡ Ø§ÙØ±Ø¦ÙØ³ÙØ©',totalTrades:'Ø¥Ø¬ÙØ§ÙÙ Ø§ÙØµÙÙØ§Øª',overallWinRate:'ÙØ¹Ø¯Ù Ø§ÙÙÙØ² Ø§ÙØ¥Ø¬ÙØ§ÙÙ',platformsSupported:'Ø§ÙÙÙØµØ§Øª Ø§ÙÙØ¯Ø¹ÙÙØ©',pineScriptsPublished:'Ø¨Ø±Ø§ÙØ¬ Pine Ø§ÙÙÙØ´ÙØ±Ø©',strategyPerformanceTitle:'Ø£Ø¯Ø§Ø¡ Ø§ÙØ¥Ø³ØªØ±Ø§ØªÙØ¬ÙØ©',qqeShowtimeName:'QQE Showtime',mt5TrendName:'ÙØªØ§Ø¨Ø¹Ø© Ø§ÙØ§ØªØ¬Ø§Ù MT5',winRate:'ÙØ¹Ø¯Ù Ø§ÙÙÙØ²',profit:'Ø§ÙØ±Ø¨Ø­',trades:'Ø§ÙØµÙÙØ§Øª',performanceChartsTitle:'ÙØ®Ø·Ø·Ø§Øª Ø§ÙØ£Ø¯Ø§Ø¡',strategyComparison:'ÙÙØ§Ø±ÙØ© Ø§ÙØ¥Ø³ØªØ±Ø§ØªÙØ¬ÙØ©',monthlyPnL:'Ø§ÙØ±Ø¨Ø­ ÙØ§ÙØ®Ø³Ø§Ø±Ø© Ø§ÙØ´ÙØ±Ù',platformExpertiseTitle:'Ø®Ø¨Ø±Ø© Ø§ÙÙÙØµØ©',socialProofTitle:'Ø­Ø¶ÙØ± Ø§ÙÙØ¬ØªÙØ¹',youtubeSubscribers:'ÙØ´ØªØ±ÙÙ YouTube',tiktokFollowers:'ÙØªØ§Ø¨Ø¹Ù TikTok',pineScriptBoosts:'ØªØ¹Ø²ÙØ²Ø§Øª Ø¨Ø±ÙØ§ÙØ¬ Pine',ctaSectionTitle:'ÙÙ ØªØ±ÙØ¯ ÙØ¹Ø±ÙØ© Ø§ÙÙØ²ÙØ¯Ø',ctaSectionDescription:'ØªÙØ§ØµÙ ÙØ¹Ù Ø¹ÙÙ GitHub ÙØ§Ø³ØªÙØ´Ø§Ù Ø§Ø³ØªØ±Ø§ØªÙØ¬ÙØ§Øª Ø§ÙØªØ¯Ø§ÙÙ.',ctaGitHubLink:'Ø²ÙØ§Ø±Ø© ÙÙÙ GitHub Ø§ÙØ´Ø®ØµÙ',footerGithub:'GitHub',footerPrivacy:'Ø³ÙØ§Ø³Ø© Ø§ÙØ®ØµÙØµÙØ©',footerTerms:'Ø´Ø±ÙØ· Ø§ÙØ®Ø¯ÙØ©',footerCopyright:'Â© 2024 Seiichi Tanaka. Ø¬ÙÙØ¹ Ø§ÙØ­ÙÙÙ ÙØ­ÙÙØ¸Ø©.'},es:{pageTitle:'Seiichi Tanaka - Panel de Control',heroTagline:'Operador Profesional | Desarrollador de Estrategias | Educador de Trading',ctaContact:'Contacto',ctaGithub:'Ver en GitHub',metricsTitle:'MÃ©tricas de Rendimiento',totalTrades:'Operaciones Totales',overallWinRate:'Tasa de Ganancia',platformsSupported:'Plataformas',pineScriptsPublished:'Scripts Pine',strategyPerformanceTitle:'Rendimiento de Estrategia',qqeShowtimeName:'QQE Showtime',mt5TrendName:'MT5 Tendencias',winRate:'Tasa de Ganancia',profit:'Ganancia',trades:'Operaciones',performanceChartsTitle:'GrÃ¡ficos',strategyComparison:'ComparaciÃ³n',monthlyPnL:'P&L Mensual',platformExpertiseTitle:'Plataformas',socialProofTitle:'Comunidad',youtubeSubscribers:'Suscriptores YouTube',tiktokFollowers:'Seguidores TikTok',pineScriptBoosts:'Impulsos Pine',ctaSectionTitle:'Â¿Listo para MÃ¡s?',ctaSectionDescription:'Conecta conmigo en GitHub para explorar mis estrategias.',ctaGitHubLink:'Visitar GitHub',footerGithub:'GitHub',footerPrivacy:'Privacidad',footerTerms:'TÃ©rminos',footerCopyright:'Â© 2024 Seiichi Tanaka. Todos los derechos reservados.'},pt:{pageTitle:'Seiichi Tanaka - Painel de OperaÃ§Ãµes',heroTagline:'Operador Profissional | Desenvolvedor de EstratÃ©gias | Educador de Trading',ctaContact:'Contato',ctaGithub:'Ver no GitHub',metricsTitle:'MÃ©tricas de Desempenho',totalTrades:'Total de OperaÃ§Ãµes',overallWinRate:'Taxa de Ganho',platformsSupported:'Plataformas',pineScriptsPublished:'Scripts Pine',strategyPerformanceTitle:'Desempenho',qqeShowtimeName:'QQE Showtime',mt5TrendName:'MT5 TendÃªncias',winRate:'Taxa de Ganho',profit:'Lucro',trades:'OperaÃ§Ãµes',performanceChartsTitle:'GrÃ¡ficos',strategyComparison:'ComparaÃ§Ã£o',monthlyPnL:'P&L Mensal',platformExpertiseTitle:'Plataformas',socialProofTitle:'Comunidade',youtubeSubscribers:'Inscritos YouTube',tiktokFollowers:'Seguidores TikTok',pineScriptBoosts:'Impulsos Pine',ctaSectionTitle:'Quer Saber Mais?',ctaSectionDescription:'Conecte-se no GitHub para explorar minhas estratÃ©gias.',ctaGitHubLink:'Visitar GitHub',footerGithub:'GitHub',footerPrivacy:'Privacidade',footerTerms:'Termos',footerCopyright:'Â© 2024 Seiichi Tanaka. Todos os direitos reservados.'},fr:{pageTitle:'Seiichi Tanaka - Tableau de Bord',heroTagline:'Trader Professionnel | DÃ©veloppeur de StratÃ©gies | Ãducateur en Trading',ctaContact:'Contact',ctaGithub:'Voir sur GitHub',metricsTitle:'MÃ©triques de Performance',totalTrades:'Total des Trades',overallWinRate:'Taux de Gain',platformsSupported:'Plateformes',pineScriptsPublished:'Scripts Pine',strategyPerformanceTitle:'Performance',qqeShowtimeName:'QQE Showtime',mt5TrendName:'MT5 Tendance',winRate:'Taux de Gain',profit:'Profit',trades:'Trades',performanceChartsTitle:'Graphiques',strategyComparison:'Comparaison',monthlyPnL:'P&L Mensuel',platformExpertiseTitle:'Plateformes',socialProofTitle:'CommunautÃ©',youtubeSubscribers:'AbonnÃ©s YouTube',tiktokFollowers:'AbonnÃ©s TikTok',pineScriptBoosts:'Boosts Pine',ctaSectionTitle:'En Savoir Plus?',ctaSectionDescription:'Connectez-vous sur GitHub pour explorer mes stratÃ©gies.',ctaGitHubLink:'Visiter GitHub',footerGithub:'GitHub',footerPrivacy:'ConfidentialitÃ©',footerTerms:'Conditions',footerCopyright:'Â© 2024 Seiichi Tanaka. Tous droits rÃ©servÃ©s.'},de:{pageTitle:'Seiichi Tanaka - Trading-Dashboard',heroTagline:'Professioneller Trader | Strategie-Entwickler | Trading-Ausbilder',ctaContact:'Kontakt',ctaGithub:'Auf GitHub',metricsTitle:'Leistungskennzahlen',totalTrades:'Gesamttransaktionen',overallWinRate:'Gewinnquote',platformsSupported:'Plattformen',pineScriptsPublished:'Pine-Skripte',strategyPerformanceTitle:'Strategie-Leistung',qqeShowtimeName:'QQE Showtime',mt5TrendName:'MT5-Trendverfolgung',winRate:'Gewinnquote',profit:'Gewinn',trades:'Transaktionen',performanceChartsTitle:'Diagramme',strategyComparison:'Vergleich',monthlyPnL:'Monatlicher G/V',platformExpertiseTitle:'Plattform-Expertise',socialProofTitle:'Community',youtubeSubscribers:'YouTube-Abonnenten',tiktokFollowers:'TikTok-Follower',pineScriptBoosts:'Pine-Boosts',ctaSectionTitle:'Mehr Erfahren?',ctaSectionDescription:'Verbinden Sie sich auf GitHub.',ctaGitHubLink:'GitHub Besuchen',footerGithub:'GitHub',footerPrivacy:'Datenschutz',footerTerms:'Nutzungsbedingungen',footerCopyright:'Â© 2024 Seiichi Tanaka. Alle Rechte vorbehalten.'}};
+let strategyChart=null,pnlChart=null,currentLang='ja';
+function initializeCharts(){const t='#a0a0a0',g='rgba(52,211,153,0.1)';const s=document.getElementById('strategyChart');if(!s)return;const ctx=s.getContext('2d');if(strategyChart)strategyChart.destroy();strategyChart=new Chart(ctx,{type:'bar',data:{labels:[translations[currentLang].qqeShowtimeName,translations[currentLang].mt5TrendName],datasets:[{label:translations[currentLang].winRate,data:[64,65],backgroundColor:'rgba(52,211,153,0.7)',borderColor:'#34d399',borderWidth:2,borderRadius:8},{label:translations[currentLang].profit+' (K JPY)',data:[610,480],backgroundColor:'rgba(59,130,246,0.7)',borderColor:'#3b82f6',borderWidth:2,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:t}}},scales:{y:{beginAtZero:true,grid:{color:g},ticks:{color:t}},x:{grid:{color:g},ticks:{color:t}}}}});const p=document.getElementById('pnlChart');if(!p)return;const ctx2=p.getContext('2d');if(pnlChart)pnlChart.destroy();pnlChart=new Chart(ctx2,{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],datasets:[{label:'P&L (K JPY)',data:[45,62,78,95,120,145,165,185,210,250,290,340],borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.1)',tension:0.4,fill:true,pointBackgroundColor:'#34d399',pointBorderColor:'#0a0a1a',pointBorderWidth:2,pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:t}}},scales:{y:{beginAtZero:true,grid:{color:g},ticks:{color:t}},x:{grid:{display:false},ticks:{color:t}}}}});}
+function switchLang(lang){currentLang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(translations[lang]&&translations[lang][k])el.textContent=translations[lang][k];});document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));if(event&&event.target)event.target.classList.add('active');initializeCharts();}
+document.addEventListener('DOMContentLoaded',()=>initializeCharts());
+window.addEventListener('load',()=>initializeCharts());
+    </script>
+</body>
+</html>
+Y)',data:[45,62,78,95,120,145,165,185,210,250,290,340],borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.1)',tension:0.4,fill:true,pointBackgroundColor:'#34d399',pointBorderColor:'#0a0a1a',pointBorderWidth:2,pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:t}}},scales:{y:{beginAtZero:true,grid:{color:g},ticks:{color:t}},x:{grid:{display:false},ticks:{color:t}}}}});}
+function switchLang(lang){currentLang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(translations[lang]&&translations[lang][k])el.textContent=translations[lang][k];});document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));if(event&&event.target)event.target.classList.add('active');initializeCharts();}
+document.addEventListener('DOMContentLoaded',()=>initializeCharts());
+window.addEventListener('load',()=>initializeCharts());
+    </script>
+</body>
+</html>
